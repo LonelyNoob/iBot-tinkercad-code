@@ -1,0 +1,73 @@
+const int xPin = A0; // X-axis potentiometer
+const int yPin = A1; // Y-axis potentiometer
+
+// LED pins
+const int ledX1 = 3; // LED for  positive X-axis movement
+const int ledX2 = 5; // LED for negative X-axis movement
+const int ledY1 = 6; // LED for positive Y-axis movement
+const int ledY2 = 9; // LED for negative Y-axis movement
+const int ledOrigin = 11; // LED for the origin (centered position)
+
+void setup()
+{
+  // Set LED pins as outputs
+  pinMode(ledX1, OUTPUT);
+  pinMode(ledX2, OUTPUT);
+  pinMode(ledY1, OUTPUT);
+  pinMode(ledY2, OUTPUT);
+  pinMode(ledOrigin, OUTPUT);
+  Serial.begin(9600); // Initialize serial communication for debugging
+}
+
+void loop()
+{
+  int xValue = analogRead(xPin); // Read the X-axis value from potentiometer
+  int yValue = analogRead(yPin); // Read the Y-axis value from potentiometer
+
+  // Determine the center thresholds
+  int centerMin = 511; // Minimum threshold for center
+  int centerMax = 512; // Maximum threshold for center
+
+  // Check if there's movement on the positive X-axis
+  if (xValue > centerMax) {
+    digitalWrite(ledX1, HIGH);
+  } else {
+    digitalWrite(ledX1, LOW);
+  }
+  
+  // Check if there's movement on the negative X-axis
+  if (xValue < centerMin) {
+    digitalWrite(ledX2, HIGH);
+  } else {
+    digitalWrite(ledX2, LOW);
+  }
+
+  // Check if there's movement on the positive Y-axis
+  if (yValue > centerMax) {
+    digitalWrite(ledY1, HIGH);
+  } else {
+    digitalWrite(ledY1, LOW);
+  }
+  
+  // Check if there's movement on the negative Y-axis
+  if (yValue < centerMin) {
+    digitalWrite(ledY2, HIGH);
+  } else {
+    digitalWrite(ledY2, LOW);
+  }
+
+  // Check if the joystick is at the origin
+  if (xValue >= centerMin && xValue <= centerMax && yValue >= centerMin && yValue <= centerMax) {
+    digitalWrite(ledOrigin, HIGH); // Center/Origin
+  } else {
+    digitalWrite(ledOrigin, LOW);
+  }
+
+  // Print values for debugging
+  Serial.print("X Value: ");
+  Serial.print(xValue);
+  Serial.print(" Y Value: ");
+  Serial.println(yValue);
+
+  delay(100); // Small delay for stability
+}
